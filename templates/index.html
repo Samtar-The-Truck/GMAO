@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Simple GMAO</title>
+</head>
+<body>
+  <h1>Équipements</h1>
+  <ul>
+    {% for eq in equipments %}
+    <li>{{ eq.name }} - {{ eq.description or '' }}</li>
+    {% endfor %}
+  </ul>
+  <h2>Ajouter un équipement</h2>
+  <form method="post" action="{{ url_for('add_equipment') }}">
+    <input name="name" placeholder="Nom" required>
+    <input name="description" placeholder="Description">
+    <button type="submit">Ajouter</button>
+  </form>
+
+  <h1>Tâches de maintenance</h1>
+  <ul>
+    {% for t in tasks %}
+    <li>
+      {{ t.description }} ({{ t.equipment.name }}) - {{ t.status }}
+      <form method="post" action="{{ url_for('update_task', task_id=t.id) }}">
+        <select name="status">
+          <option value="pending" {% if t.status == 'pending' %}selected{% endif %}>En attente</option>
+          <option value="done" {% if t.status == 'done' %}selected{% endif %}>Réalisé</option>
+        </select>
+        <button type="submit">Mettre à jour</button>
+      </form>
+    </li>
+    {% endfor %}
+  </ul>
+  <h2>Ajouter une tâche</h2>
+  <form method="post" action="{{ url_for('add_task') }}">
+    <select name="equipment_id" required>
+      {% for eq in equipments %}
+      <option value="{{ eq.id }}">{{ eq.name }}</option>
+      {% endfor %}
+    </select>
+    <input name="description" placeholder="Description" required>
+    <button type="submit">Ajouter</button>
+  </form>
+</body>
+</html>
